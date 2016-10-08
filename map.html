@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>mochimap</title>
+<style type="text/css">
+canvas {
+    border: 1px solid;
+    background-color: black;
+}
+</style>
+</head>
+<body>
+    <canvas id="mainmap" width="1200" height="800"></canvas>
+</body>
+<script type="text/javascript">
+(function(){
+    var zoom = 5;
+    var tileSize = 512;
+    var canvas = document.getElementById("mainmap");
+    var canvasWidth = canvas.width = window.innerWidth - 48;
+    var canvasHeight = canvas.height = window.innerHeight - 48;
+    //var canvasWidth = canvas.width;
+    //var canvasHeight = canvas.height;
+    var context = canvas.getContext("2d");
+    
+    var loadImage = function(filename){
+        var img = new Image();
+        img.src = filename;
+        return img;
+    };
+    var drawImage = function(filename, context, x, y, w, h){
+        var img = new Image();
+        img.src = filename;
+        img.onload = function(){
+            context.clearRect(x, y, w, h);
+            context.drawImage(img, x, y, w, h);
+        };
+        img.onerror = function(){
+            context.clearRect(x, y, w, h);
+        };
+    };
+    
+    var offsetX = offsetY = 0;
+    var scrollFlag = false;
+    
+    var draw = function(){
+        //context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        var ix = Math.floor(-offsetX / tileSize);
+        var iy = Math.floor(-offsetY / tileSize);
+        var bx = offsetX % tileSize;
+        if (bx > 0) {
+            bx -= tileSize;
+        }
+        var by = offsetY % tileSize;
+        if (by > 0) {
+            by -= tileSize;
+        }
+
+        var xnum = Math.ceil(canvasWidth / tileSize);
+        var ynum = Math.ceil(canvasHeight / tileSize);
+        for (var j = 0; j <= ynum; ++j) {
+            for (var i = 0; i <= xnum; ++i) {
+                var fname = "tile." + (ix + i) + "." + (iy + j) + ".png";
+                //context.drawImage(loadImage(fname), bx + tileSize * i, by + tileSize * j, tileSize, tileSize);
+                drawImage(fname, context, bx + tileSize * i, by + tileSize * j, tileSize, tileSize);
+                //context.fillText(fname, bx + 512 * i, by + 512 * j);
+            }
+        }
+    };
+    
+    var mouseevent = function(event){
+        if (event.buttons & 1 && scrollFlag) {
+            offsetX += event.movementX;
+            offsetY += event.movementY;
+            draw();
+        }
+    };
+    canvas.addEventListener("mousemove", mouseevent);
+    canvas.addEventListener("mouseup", function(){
+        scrollFlag = false;
+    });
+    canvas.addEventListener("mousedown", function(event){
+        scrollFlag = true;
+    });
+    canvas.addEventListener("wheel", function(event){
+        console.log(event);
+        if (event.wheelDelta > 0) {
+            if (++zoom > 7) {
+                zoom = 7;
+            } else {
+                offsetX *= 2;
+                offsetY *= 2;
+            }
+        } else {
+            if (--zoom < 3) {
+                zoom = 3;
+            } else {
+                offsetX /= 2;
+                offsetY /= 2;
+            }
+        }
+        //console.log(offsetX, offsetY);
+        tileSize = Math.pow(2, zoom) * 16;
+        context.clearRect(0, 0, canvasWidth, canvasHeight);
+        draw();
+    });
+    
+    window.addEventListener("resize", function(event){
+        console.log(event);
+        canvasWidth = canvas.width = window.innerWidth - 48;
+        canvasHeight = canvas.height = window.innerHeight - 48;
+    });
+
+    draw();
+})();
+</script>
+</html>
