@@ -109,6 +109,7 @@ canvas {
 
         if (pinchStartDistance > 0) {
             zooming(pinchDistance > pinchStartDistance);
+            pinchStartDistance = 0;
         }
     });
     canvas.addEventListener(eventStart, function(event){
