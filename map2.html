@@ -31,6 +31,7 @@ canvas {
     var canvasWidth = canvas.width = document.body.clientWidth - 2;
     var canvasHeight = canvas.height = document.body.clientHeight - 2;
     var context = canvas.getContext("2d");
+    var prevX = prevY = 0;
     
     var eventStart = ("ontouchstart" in window) ? "touchstart" : "mousedown";
     var eventEnd = ("ontouchend" in window) ? "touchend" : "mouseup";
@@ -84,8 +85,10 @@ canvas {
     
     var mouseevent = function(event){
         if (event.buttons & 1 && scrollFlag) {
-            offsetX += event.movementX;
-            offsetY += event.movementY;
+            offsetX += event.clientX - prevX;
+            offsetY += event.clientY - prevY;
+            prevX = event.clientX;
+            prevY = event.clientY;
             draw();
         }
     };
@@ -95,6 +98,8 @@ canvas {
     });
     canvas.addEventListener(eventStart, function(event){
         scrollFlag = true;
+        prevX = event.clientX;
+        prevY = event.clientY;
     });
     canvas.addEventListener("wheel", function(event){
         console.log(event);
