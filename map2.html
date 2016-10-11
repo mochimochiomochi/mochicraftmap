@@ -87,6 +87,10 @@ canvas {
     var mouseevent = function(event){
         event.preventDefault();
         if (scrollFlag) {
+        window.alert(event);
+        window.alert(event.touches);
+        window.alert(event.touches[0]);
+        window.alert(event.touches[0].clientX);
             var cx = event.touches ? event.touches[0].clientX : event.clientX;
             var cy = event.touches ? event.touches[0].clienYX : event.clientY;
             offsetX += cx - prevX;
@@ -102,10 +106,6 @@ canvas {
         scrollFlag = false;
     });
     canvas.addEventListener(eventStart, function(event){
-        window.alert(event);
-        window.alert(event.touches);
-        window.alert(event.touches[0]);
-        window.alert(event.touches[0].clientX);
         event.preventDefault();
         scrollFlag = true;
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
