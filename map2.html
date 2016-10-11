@@ -80,7 +80,6 @@ canvas {
                 var fname = "tile." + (ix + i) + "." + (iy + j) + ".png";
                 //context.drawImage(loadImage(fname), bx + tileSize * i, by + tileSize * j, tileSize, tileSize);
                 drawImage(fname, context, bx + tileSize * i, by + tileSize * j, tileSize, tileSize);
-                //context.fillText(fname, bx + 512 * i, by + 512 * j);
             }
         }
     };
@@ -118,11 +117,6 @@ canvas {
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
         prevY = event.touches ? event.touches[0].clientY : event.clientY;
 
-        if (event.touches) {
-            context.clearRect(0, 0, 100, 20);
-            context.fillStyle = "white";
-            context.fillText(event.touches.length + " ", 10, 10);
-        }
         pinchStartDistance = 0;
         if (event.touches && event.touches.length > 1) {
             pinchStartDistance = Math.sqrt(
@@ -133,7 +127,6 @@ canvas {
     });
     canvas.addEventListener("wheel", function(event){
         event.preventDefault();
-        console.log(event);
         zooming(event.wheelDelta > 0);
     });
     
@@ -153,14 +146,12 @@ canvas {
                 offsetY /= 2;
             }
         }
-        //console.log(offsetX, offsetY);
         tileSize = Math.pow(2, zoom) * 16;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         draw();
     };
     
     window.addEventListener("resize", function(event){
-        console.log(event);
         canvasWidth = canvas.width = document.body.clientWidth - 2;
         canvasHeight = canvas.height = document.body.clientHeight - 2;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
