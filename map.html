@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>mochimap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <style type="text/css">
 html {
     margin: 0;
@@ -31,6 +32,11 @@ canvas {
     var canvasWidth = canvas.width = document.body.clientWidth - 2;
     var canvasHeight = canvas.height = document.body.clientHeight - 2;
     var context = canvas.getContext("2d");
+    var prevX = prevY = 0;
+    
+    var eventStart = ("ontouchstart" in window) ? "touchstart" : "mousedown";
+    var eventEnd = ("ontouchend" in window) ? "touchend" : "mouseup";
+    var eventMove = ("ontouchmove" in window) ? "touchmove" : "mousemove";
     
     var loadImage = function(filename){
         var img = new Image();
@@ -79,20 +85,30 @@ canvas {
     };
     
     var mouseevent = function(event){
-        if (event.buttons & 1 && scrollFlag) {
-            offsetX += event.movementX;
-            offsetY += event.movementY;
+        event.preventDefault();
+        if (scrollFlag) {
+            var cx = event.touches ? event.touches[0].clientX : event.clientX;
+            var cy = event.touches ? event.touches[0].clientY : event.clientY;
+            offsetX += cx - prevX;
+            offsetY += cy - prevY;
+            prevX = cx;
+            prevY = cy;
             draw();
         }
     };
-    canvas.addEventListener("mousemove", mouseevent);
-    canvas.addEventListener("mouseup", function(){
+    canvas.addEventListener(eventMove, mouseevent);
+    canvas.addEventListener(eventEnd, function(){
+        event.preventDefault();
         scrollFlag = false;
     });
-    canvas.addEventListener("mousedown", function(event){
+    canvas.addEventListener(eventStart, function(event){
+        event.preventDefault();
         scrollFlag = true;
+        prevX = event.touches ? event.touches[0].clientX : event.clientX;
+        prevY = event.touches ? event.touches[0].clientY : event.clientY;
     });
     canvas.addEventListener("wheel", function(event){
+        event.preventDefault();
         console.log(event);
         if (event.wheelDelta > 0) {
             if (++zoom > 7) {
