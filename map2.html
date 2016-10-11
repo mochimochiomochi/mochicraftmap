@@ -94,7 +94,7 @@ canvas {
         event.preventDefault();
         if (scrollFlag) {
             var cx = event.touches ? event.touches[0].clientX : event.clientX;
-            var cy = event.touches ? event.touches[0].clienYX : event.clientY;
+            var cy = event.touches ? event.touches[0].clientY : event.clientY;
             offsetX += cx - prevX;
             offsetY += cy - prevY;
             prevX = cx;
