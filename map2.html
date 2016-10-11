@@ -103,6 +103,9 @@ canvas {
     });
     canvas.addEventListener(eventStart, function(event){
         window.alert(event);
+        window.alert(event.touches);
+        window.alert(event.touches[0]);
+        window.alert(event.touches[0].clientX);
         event.preventDefault();
         scrollFlag = true;
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
