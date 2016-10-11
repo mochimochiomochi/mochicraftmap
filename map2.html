@@ -102,7 +102,6 @@ canvas {
         event.preventDefault();
         scrollFlag = false;
 
-        console.log(event);
         if (event.touches && event.touches.length > 1) {
             var distance = Math.sqrt(
                 Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
@@ -116,8 +115,12 @@ canvas {
         scrollFlag = true;
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
         prevY = event.touches ? event.touches[0].clientY : event.clientY;
-        
-        console.log(event);
+
+        if (event.touches) {
+            context.clearRect(0, 0, 100, 20);
+            context.fillStyle = "white";
+            context.fillText(event.touches.length + " ", 10, 10);
+        }
         if (event.touches && event.touches.length > 1) {
             pinchDistance = Math.sqrt(
                 Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
