@@ -33,6 +33,7 @@ canvas {
     var canvasHeight = canvas.height = document.body.clientHeight - 2;
     var context = canvas.getContext("2d");
     var prevX = prevY = 0;
+    var pinchDistance = 0;
     
     var eventStart = ("ontouchstart" in window) ? "touchstart" : "mousedown";
     var eventEnd = ("ontouchend" in window) ? "touchend" : "mouseup";
@@ -100,12 +101,27 @@ canvas {
     canvas.addEventListener(eventEnd, function(){
         event.preventDefault();
         scrollFlag = false;
+
+        if (event.touches && event.touches.length > 1) {
+            var distance = Math.sqrt(
+                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
+                Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
+            );
+            zooming(distance > pinchDistance);
+        }
     });
     canvas.addEventListener(eventStart, function(event){
         event.preventDefault();
         scrollFlag = true;
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
         prevY = event.touches ? event.touches[0].clientY : event.clientY;
+        
+        if (event.touches && event.touches.length > 1) {
+            pinchDistance = Math.sqrt(
+                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
+                Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
+            );
+        }
     });
     canvas.addEventListener("wheel", function(event){
         event.preventDefault();
