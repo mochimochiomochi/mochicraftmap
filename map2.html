@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>mochimap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <style type="text/css">
 html {
     margin: 0;
@@ -84,6 +85,7 @@ canvas {
     };
     
     var mouseevent = function(event){
+        event.preventDefault();
         if (event.buttons & 1 && scrollFlag) {
             var cx = event.touches ? event.touches[0].clientX : event.clientX;
             var cy = event.touches ? event.touches[0].clienYX : event.clientY;
@@ -96,14 +98,17 @@ canvas {
     };
     canvas.addEventListener(eventMove, mouseevent);
     canvas.addEventListener(eventEnd, function(){
+        event.preventDefault();
         scrollFlag = false;
     });
     canvas.addEventListener(eventStart, function(event){
+        event.preventDefault();
         scrollFlag = true;
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
         prevY = event.touches ? event.touches[0].clientY : event.clientY;
     });
     canvas.addEventListener("wheel", function(event){
+        event.preventDefault();
         console.log(event);
         if (event.wheelDelta > 0) {
             if (++zoom > 7) {
