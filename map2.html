@@ -85,8 +85,9 @@ canvas {
     };
     
     setInterval(function(){
+        context.clearRect(0, 0, 100, 20);
         context.fillText(offsetX + "," + offsetY, 10, 10);
-    }, 1000);
+    }, 300);
     
     var mouseevent = function(event){
         event.preventDefault();
