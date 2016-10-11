@@ -102,11 +102,10 @@ canvas {
         event.preventDefault();
         scrollFlag = false;
 
-        console.log(event);
-        if (event.touches && event.touches.length > 1) {
+        if (event.changedTouches && event.changedTouches.length > 1) {
             var distance = Math.sqrt(
-                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
-                Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
+                Math.pow(event.changedTouches[1].clientX - event.changedTouches[0].clientX, 2) + 
+                Math.pow(event.changedTouches[1].clientY - event.changedTouches[0].clientY, 2)
             );
             zooming(distance > pinchDistance);
         }
@@ -117,11 +116,10 @@ canvas {
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
         prevY = event.touches ? event.touches[0].clientY : event.clientY;
         
-        console.log(event);
-        if (event.touches && event.touches.length > 1) {
+        if (event.changedTouches && event.changedTouches.length > 1) {
             pinchDistance = Math.sqrt(
-                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
-                Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
+                Math.pow(event.changedTouches[1].clientX - event.changedTouches[0].clientX, 2) + 
+                Math.pow(event.changedTouches[1].clientY - event.changedTouches[0].clientY, 2)
             );
         }
     });
