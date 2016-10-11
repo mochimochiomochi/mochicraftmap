@@ -86,7 +86,7 @@ canvas {
     
     var mouseevent = function(event){
         event.preventDefault();
-        if (event.buttons & 1 && scrollFlag) {
+        if (scrollFlag) {
             var cx = event.touches ? event.touches[0].clientX : event.clientX;
             var cy = event.touches ? event.touches[0].clienYX : event.clientY;
             offsetX += cx - prevX;
