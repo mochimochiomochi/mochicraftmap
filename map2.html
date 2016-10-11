@@ -85,10 +85,12 @@ canvas {
     
     var mouseevent = function(event){
         if (event.buttons & 1 && scrollFlag) {
-            offsetX += event.clientX - prevX;
-            offsetY += event.clientY - prevY;
-            prevX = event.clientX;
-            prevY = event.clientY;
+            var cx = event.touchs ? event.touchs[0].clientX : event.clientX;
+            var cy = event.touchs ? event.touchs[0].clienYX : event.clientY;
+            offsetX += cx - prevX;
+            offsetY += cy - prevY;
+            prevX = cx;
+            prevY = cy;
             draw();
         }
     };
