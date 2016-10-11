@@ -110,7 +110,11 @@ canvas {
     canvas.addEventListener("wheel", function(event){
         event.preventDefault();
         console.log(event);
-        if (event.wheelDelta > 0) {
+        zooming(event.wheelDelta > 0);
+    });
+    
+    var zooming = function(zoomin){
+        if (zoomin) {
             if (++zoom > 7) {
                 zoom = 7;
             } else {
@@ -129,7 +133,7 @@ canvas {
         tileSize = Math.pow(2, zoom) * 16;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         draw();
-    });
+    };
     
     window.addEventListener("resize", function(event){
         console.log(event);
