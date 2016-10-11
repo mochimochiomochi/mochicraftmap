@@ -37,6 +37,7 @@ canvas {
     var eventStart = ("ontouchstart" in window) ? "touchstart" : "mousedown";
     var eventEnd = ("ontouchend" in window) ? "touchend" : "mouseup";
     var eventMove = ("ontouchmove" in window) ? "touchmove" : "mousemove";
+    window.alert(eventMove);
     
     var loadImage = function(filename){
         var img = new Image();
