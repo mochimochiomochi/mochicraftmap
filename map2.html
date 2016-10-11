@@ -37,7 +37,6 @@ canvas {
     var eventStart = ("ontouchstart" in window) ? "touchstart" : "mousedown";
     var eventEnd = ("ontouchend" in window) ? "touchend" : "mouseup";
     var eventMove = ("ontouchmove" in window) ? "touchmove" : "mousemove";
-    window.alert(eventMove);
     
     var loadImage = function(filename){
         var img = new Image();
@@ -103,6 +102,7 @@ canvas {
         scrollFlag = false;
     });
     canvas.addEventListener(eventStart, function(event){
+        window.alert(event);
         event.preventDefault();
         scrollFlag = true;
         prevX = event.touches ? event.touches[0].clientX : event.clientX;
