@@ -85,8 +85,8 @@ canvas {
     
     var mouseevent = function(event){
         if (event.buttons & 1 && scrollFlag) {
-            var cx = event.touchs ? event.touchs[0].clientX : event.clientX;
-            var cy = event.touchs ? event.touchs[0].clienYX : event.clientY;
+            var cx = event.touches ? event.touches[0].clientX : event.clientX;
+            var cy = event.touches ? event.touches[0].clienYX : event.clientY;
             offsetX += cx - prevX;
             offsetY += cy - prevY;
             prevX = cx;
@@ -100,8 +100,8 @@ canvas {
     });
     canvas.addEventListener(eventStart, function(event){
         scrollFlag = true;
-        prevX = event.clientX;
-        prevY = event.clientY;
+        prevX = event.touches ? event.touches[0].clientX : event.clientX;
+        prevY = event.touches ? event.touches[0].clientY : event.clientY;
     });
     canvas.addEventListener("wheel", function(event){
         console.log(event);
