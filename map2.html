@@ -14,10 +14,17 @@ body {
     margin: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 canvas {
     margin: 0;
     background-color: black;
+}
+span.sign {
+    position: absolute;
+    white-space: pre;
+    text-shadow: 2px 2px 2px #444444;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 </style>
 </head>
@@ -25,6 +32,7 @@ canvas {
     <canvas id="mainmap" width="1200" height="800"></canvas>
 </body>
 <script type="text/javascript">
+MAP_SIGNS = [];
 (function(){
     var zoom = 5;
     var tileSize = 512;
@@ -39,6 +47,20 @@ canvas {
     var eventEnd = ("ontouchend" in window) ? "touchend" : "mouseup";
     var eventMove = ("ontouchmove" in window) ? "touchmove" : "mousemove";
     
+    var signs;
+    fetch("signs.json").then(function(res){
+        return res.json();
+    }).then(function(json){
+        signs = json;
+        signs.forEach(function(obj, n){
+            var ele = document.createElement("span");
+            ele.className = "sign";
+            ele.setAttribute("id", "sign-" + n);
+            ele.textContent = obj.name;
+            document.body.appendChild(ele);
+        });
+    });
+
     var loadImage = function(filename){
         var img = new Image();
         img.src = filename;
@@ -81,6 +103,14 @@ canvas {
                 //context.drawImage(loadImage(fname), bx + tileSize * i, by + tileSize * j, tileSize, tileSize);
                 drawImage(fname, context, bx + tileSize * i, by + tileSize * j, tileSize, tileSize);
             }
+        }
+        if (signs) {
+            var by = Math.pow(2, zoom - 5);
+            signs.forEach(function(obj, n){
+                var ele = document.getElementById("sign-" + n);
+                ele.style.left = (offsetX + obj.x * by) + "px";
+                ele.style.top = (offsetY + obj.y * by) + "px";
+            });
         }
     };
     
@@ -128,6 +158,12 @@ canvas {
     canvas.addEventListener("wheel", function(event){
         event.preventDefault();
         zooming(event.wheelDelta > 0);
+    });
+    canvas.addEventListener("dblclick", function(event){
+        var by = Math.pow(2, zoom - 5);
+        var x = (event.clientX - offsetX) / by;
+        var y = (event.clientY - offsetY) / by;
+        window.alert(x + "," + y);
     });
     
     var zooming = function(zoomin){
