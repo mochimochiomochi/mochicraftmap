@@ -97,7 +97,7 @@ canvas {
         }
         if (pinchStartDistance > 0 && event.touches && event.touches.length > 1) {
             pinchDistance = Math.sqrt(
-                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) +
+                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
                 Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
             );
         }
@@ -120,7 +120,7 @@ canvas {
         pinchStartDistance = 0;
         if (event.touches && event.touches.length > 1) {
             pinchStartDistance = Math.sqrt(
-                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) +
+                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
                 Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
             );
         }
@@ -129,7 +129,7 @@ canvas {
         event.preventDefault();
         zooming(event.wheelDelta > 0);
     });
-
+    
     var zooming = function(zoomin){
         if (zoomin) {
             if (++zoom > 7) {
