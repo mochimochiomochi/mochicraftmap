@@ -32,7 +32,6 @@ span.sign {
     <canvas id="mainmap" width="1200" height="800"></canvas>
 </body>
 <script type="text/javascript">
-MAP_SIGNS = [];
 (function(){
     var zoom = 5;
     var tileSize = 512;
@@ -47,18 +46,25 @@ MAP_SIGNS = [];
     var eventEnd = ("ontouchend" in window) ? "touchend" : "mouseup";
     var eventMove = ("ontouchmove" in window) ? "touchmove" : "mousemove";
     
-    var signs;
-    fetch("signs.json").then(function(res){
+    var signs = [];
+    fetch("https://sheets.googleapis.com/v4/spreadsheets/1HQDW4PS8_bUOXzMS4sP8eMIi4DOoB2jyE_BhJdI6gEQ/values/A2:C1000?key=AIzaSyCcB76lmXuniVlzJM810ankX2VBizashC0")
+    .then(function(res){
         return res.json();
-    }).then(function(json){
-        signs = json;
-        signs.forEach(function(obj, n){
+    })
+    .then(function(json){
+        json.values.forEach(function(ary, n){
+            signs.push({
+                name: ary[0],
+                x: ary[1],
+                y: ary[2]
+            });
             var ele = document.createElement("span");
             ele.className = "sign";
             ele.setAttribute("id", "sign-" + n);
-            ele.textContent = obj.name;
+            ele.textContent = ary[0];
             document.body.appendChild(ele);
         });
+        draw();
     });
 
     var loadImage = function(filename){
@@ -127,7 +133,7 @@ MAP_SIGNS = [];
         }
         if (pinchStartDistance > 0 && event.touches && event.touches.length > 1) {
             pinchDistance = Math.sqrt(
-                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
+                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) +
                 Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
             );
         }
@@ -150,7 +156,7 @@ MAP_SIGNS = [];
         pinchStartDistance = 0;
         if (event.touches && event.touches.length > 1) {
             pinchStartDistance = Math.sqrt(
-                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) + 
+                Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) +
                 Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
             );
         }
@@ -165,7 +171,7 @@ MAP_SIGNS = [];
         var y = (event.clientY - offsetY) / by;
         window.alert(x + "," + y);
     });
-    
+
     var zooming = function(zoomin){
         if (zoomin) {
             if (++zoom > 7) {
