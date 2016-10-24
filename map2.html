@@ -30,10 +30,11 @@ span.sign {
 </head>
 <body>
     <canvas id="mainmap" width="1200" height="800"></canvas>
+    <span class="sign" style="top:0;left:0" id="debug"></span>
 </body>
 <script type="text/javascript">
 (function(){
-    var zoom = 5;
+    var zoom = 0;
     var tileSize = 512;
     var canvas = document.getElementById("mainmap");
     var canvasWidth = canvas.width = document.body.clientWidth - 2;
@@ -111,13 +112,14 @@ span.sign {
             }
         }
         if (signs) {
-            var by = Math.pow(2, zoom - 5);
+            var by = Math.pow(1.1, zoom);
             signs.forEach(function(obj, n){
                 var ele = document.getElementById("sign-" + n);
                 ele.style.left = (offsetX + obj.x * by) + "px";
                 ele.style.top = (offsetY + obj.y * by) + "px";
             });
         }
+        document.getElementById("debug").textContent = offsetX + "," + offsetY;
     };
     
     canvas.addEventListener(eventMove, function(){
@@ -166,7 +168,7 @@ span.sign {
         zooming(event.wheelDelta > 0);
     });
     canvas.addEventListener("dblclick", function(event){
-        var by = Math.pow(2, zoom - 5);
+        var by = Math.pow(1.1, zoom);
         var x = (event.clientX - offsetX) / by;
         var y = (event.clientY - offsetY) / by;
         window.alert(x + "," + y);
@@ -174,21 +176,11 @@ span.sign {
 
     var zooming = function(zoomin){
         if (zoomin) {
-            if (++zoom > 7) {
-                zoom = 7;
-            } else {
-                offsetX *= 2;
-                offsetY *= 2;
-            }
+            ++zoom;
         } else {
-            if (--zoom < 3) {
-                zoom = 3;
-            } else {
-                offsetX /= 2;
-                offsetY /= 2;
-            }
+            --zoom;
         }
-        tileSize = Math.pow(2, zoom) * 16;
+        tileSize = 512 * Math.pow(1.1, zoom);
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         draw();
     };
