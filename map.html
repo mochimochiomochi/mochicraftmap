@@ -23,17 +23,22 @@ canvas {
 span.sign {
     position: absolute;
     white-space: pre;
-    text-shadow: 2px 2px 2px #444444;
-    background-color: rgba(255, 255, 255, 0.7);
+    text-shadow:
+        1px 1px 1px #FFF,
+        -1px 1px 1px #FFF,
+        1px -1px 1px #FFF,
+        -1px -1px 1px #FFF;
+    pointer-events: none;
 }
 </style>
 </head>
 <body>
     <canvas id="mainmap" width="1200" height="800"></canvas>
+    <span class="sign" style="top:0;left:0" id="debug"></span>
 </body>
 <script type="text/javascript">
 (function(){
-    var zoom = 5;
+    var zoom = 0;
     var tileSize = 512;
     var canvas = document.getElementById("mainmap");
     var canvasWidth = canvas.width = document.body.clientWidth - 2;
@@ -111,13 +116,14 @@ span.sign {
             }
         }
         if (signs) {
-            var by = Math.pow(2, zoom - 5);
+            var by = Math.pow(1.1, zoom);
             signs.forEach(function(obj, n){
                 var ele = document.getElementById("sign-" + n);
                 ele.style.left = (offsetX + obj.x * by) + "px";
                 ele.style.top = (offsetY + obj.y * by) + "px";
             });
         }
+        document.getElementById("debug").textContent = offsetX + "," + offsetY;
     };
     
     canvas.addEventListener(eventMove, function(){
@@ -163,32 +169,30 @@ span.sign {
     });
     canvas.addEventListener("wheel", function(event){
         event.preventDefault();
-        zooming(event.wheelDelta > 0);
+        zooming(event.wheelDelta > 0, event.clientX, event.clientY);
     });
     canvas.addEventListener("dblclick", function(event){
-        var by = Math.pow(2, zoom - 5);
+        var by = Math.pow(1.1, zoom);
         var x = (event.clientX - offsetX) / by;
         var y = (event.clientY - offsetY) / by;
         window.alert(x + "," + y);
     });
 
-    var zooming = function(zoomin){
+    var zooming = function(zoomin, baseX, baseY){
+        baseX = baseX || 0;
+        baseY = baseY || 0;
+        var by = Math.pow(1.1, zoom);
+        var x = (baseX - offsetX) / by;
+        var y = (baseY - offsetY) / by;
         if (zoomin) {
-            if (++zoom > 7) {
-                zoom = 7;
-            } else {
-                offsetX *= 2;
-                offsetY *= 2;
-            }
+            ++zoom;
         } else {
-            if (--zoom < 3) {
-                zoom = 3;
-            } else {
-                offsetX /= 2;
-                offsetY /= 2;
-            }
+            --zoom;
         }
-        tileSize = Math.pow(2, zoom) * 16;
+        tileSize = 512 * Math.pow(1.1, zoom);
+        by = Math.pow(1.1, zoom);
+        offsetX = baseX - x * by;
+        offsetY = baseY - y * by;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         draw();
     };
