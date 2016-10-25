@@ -170,7 +170,9 @@ span.sign {
         zooming(event.wheelDelta > 0, event.clientX, event.clientY);
     });
     canvas.addEventListener("dblclick", function(event){
-        if (event.button == 1) {
+        if (event.button == 0) {
+            zooming(true, event.clientX, event.clientY, 5);
+        } else if (event.button == 1) {
             var by = Math.pow(1.1, zoom);
             var x = (event.clientX - offsetX) / by;
             var y = (event.clientY - offsetY) / by;
@@ -178,16 +180,17 @@ span.sign {
         }
     });
 
-    var zooming = function(zoomin, baseX, baseY){
+    var zooming = function(zoomin, baseX, baseY, step){
         baseX = baseX || 0;
         baseY = baseY || 0;
+        step = step || 1;
         var by = Math.pow(1.1, zoom);
         var x = (baseX - offsetX) / by;
         var y = (baseY - offsetY) / by;
         if (zoomin) {
-            ++zoom;
+            zoom += step;
         } else {
-            --zoom;
+            zoom -= step;
         }
         tileSize = 512 * Math.pow(1.1, zoom);
         by = Math.pow(1.1, zoom);
