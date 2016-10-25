@@ -140,11 +140,13 @@ span.sign {
                 Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) +
                 Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
             );
-            zooming(distance > pinchDistance,
-                    (event.touches[1].clientX + event.touches[0].clientX) / 2,
-                    (event.touches[1].clientY + event.touches[0].clientY) / 2
-            );
-            pinchDistance = distance;
+            if (Math.abs(pinchDistance - distance) > 10) {
+                zooming(distance > pinchDistance,
+                        (event.touches[1].clientX + event.touches[0].clientX) / 2,
+                        (event.touches[1].clientY + event.touches[0].clientY) / 2
+                );
+                pinchDistance = distance;
+            }
         }
     });
     canvas.addEventListener(eventEnd, function(){
