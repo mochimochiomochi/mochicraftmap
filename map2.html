@@ -170,10 +170,12 @@ span.sign {
         zooming(event.wheelDelta > 0, event.clientX, event.clientY);
     });
     canvas.addEventListener("dblclick", function(event){
-        var by = Math.pow(1.1, zoom);
-        var x = (event.clientX - offsetX) / by;
-        var y = (event.clientY - offsetY) / by;
-        window.alert(x + "," + y);
+        if (event.button == 1) {
+            var by = Math.pow(1.1, zoom);
+            var x = (event.clientX - offsetX) / by;
+            var y = (event.clientY - offsetY) / by;
+            window.alert(x + "," + y);
+        }
     });
 
     var zooming = function(zoomin, baseX, baseY){
