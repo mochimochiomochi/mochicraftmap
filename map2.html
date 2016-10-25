@@ -34,7 +34,6 @@ span.sign {
 </head>
 <body>
     <canvas id="mainmap" width="1200" height="800"></canvas>
-    <span class="sign" style="top:0;left:0" id="debug"></span>
 </body>
 <script type="text/javascript">
 (function(){
@@ -123,7 +122,6 @@ span.sign {
                 ele.style.top = (offsetY + obj.y * by) + "px";
             });
         }
-        document.getElementById("debug").textContent = offsetX + "," + offsetY;
     };
     
     canvas.addEventListener(eventMove, function(){
