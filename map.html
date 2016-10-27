@@ -23,8 +23,12 @@ canvas {
 span.sign {
     position: absolute;
     white-space: pre;
-    text-shadow: 2px 2px 2px #444444;
-    background-color: rgba(255, 255, 255, 0.7);
+    text-shadow:
+        1px 1px 1px #FFF,
+        -1px 1px 1px #FFF,
+        1px -1px 1px #FFF,
+        -1px -1px 1px #FFF;
+    pointer-events: none;
 }
 </style>
 </head>
@@ -33,7 +37,7 @@ span.sign {
 </body>
 <script type="text/javascript">
 (function(){
-    var zoom = 5;
+    var zoom = 0;
     var tileSize = 512;
     var canvas = document.getElementById("mainmap");
     var canvasWidth = canvas.width = document.body.clientWidth - 2;
@@ -111,7 +115,7 @@ span.sign {
             }
         }
         if (signs) {
-            var by = Math.pow(2, zoom - 5);
+            var by = Math.pow(1.1, zoom);
             signs.forEach(function(obj, n){
                 var ele = document.getElementById("sign-" + n);
                 ele.style.left = (offsetX + obj.x * by) + "px";
@@ -132,10 +136,17 @@ span.sign {
             draw();
         }
         if (pinchStartDistance > 0 && event.touches && event.touches.length > 1) {
-            pinchDistance = Math.sqrt(
+            distance = Math.sqrt(
                 Math.pow(event.touches[1].clientX - event.touches[0].clientX, 2) +
                 Math.pow(event.touches[1].clientY - event.touches[0].clientY, 2)
             );
+            if (Math.abs(pinchDistance - distance) > 10) {
+                zooming(distance > pinchDistance,
+                        (event.touches[1].clientX + event.touches[0].clientX) / 2,
+                        (event.touches[1].clientY + event.touches[0].clientY) / 2
+                );
+                pinchDistance = distance;
+            }
         }
     });
     canvas.addEventListener(eventEnd, function(){
@@ -143,7 +154,6 @@ span.sign {
         scrollFlag = false;
 
         if (pinchStartDistance > 0) {
-            zooming(pinchDistance > pinchStartDistance);
             pinchStartDistance = 0;
         }
     });
@@ -163,32 +173,35 @@ span.sign {
     });
     canvas.addEventListener("wheel", function(event){
         event.preventDefault();
-        zooming(event.wheelDelta > 0);
+        zooming(event.wheelDelta > 0, event.clientX, event.clientY);
     });
     canvas.addEventListener("dblclick", function(event){
-        var by = Math.pow(2, zoom - 5);
-        var x = (event.clientX - offsetX) / by;
-        var y = (event.clientY - offsetY) / by;
-        window.alert(x + "," + y);
+        if (event.button == 0) {
+            zooming(true, event.clientX, event.clientY, 5);
+        } else if (event.button == 1) {
+            var by = Math.pow(1.1, zoom);
+            var x = (event.clientX - offsetX) / by;
+            var y = (event.clientY - offsetY) / by;
+            window.alert(x + "," + y);
+        }
     });
 
-    var zooming = function(zoomin){
+    var zooming = function(zoomin, baseX, baseY, step){
+        baseX = baseX || 0;
+        baseY = baseY || 0;
+        step = step || 1;
+        var by = Math.pow(1.1, zoom);
+        var x = (baseX - offsetX) / by;
+        var y = (baseY - offsetY) / by;
         if (zoomin) {
-            if (++zoom > 7) {
-                zoom = 7;
-            } else {
-                offsetX *= 2;
-                offsetY *= 2;
-            }
+            zoom += step;
         } else {
-            if (--zoom < 3) {
-                zoom = 3;
-            } else {
-                offsetX /= 2;
-                offsetY /= 2;
-            }
+            zoom -= step;
         }
-        tileSize = Math.pow(2, zoom) * 16;
+        tileSize = 512 * Math.pow(1.1, zoom);
+        by = Math.pow(1.1, zoom);
+        offsetX = baseX - x * by;
+        offsetY = baseY - y * by;
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         draw();
     };
