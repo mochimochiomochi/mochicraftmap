@@ -223,15 +223,22 @@ span.sign {
 
     var signCallback = function(event){
         var ele = event.target;
+        var newevent;
         if (ele.tagName.toUpperCase() === "SPAN" && ele.classList.contains("sign")) {
             event.preventDefault();
-            var newevent = new MouseEvent(event.type, event);
+            if (event.type === "wheel") {
+                newevent = new WheelEvent(event.type, event);
+            } else {
+                newevent = new MouseEvent(event.type, event);
+            }
             canvas.dispatchEvent(newevent);
         }
     };
     document.addEventListener(eventStart, signCallback);
     document.addEventListener(eventMove, signCallback);
     document.addEventListener(eventEnd, signCallback);
+    document.addEventListener("wheel", signCallback);
+    document.addEventListener("dblclick", signCallback);
 
     draw();
 })();
