@@ -34,10 +34,17 @@ span.sign {
     -ms-user-select: none;
     cursor: default;
 }
+#select {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 999;
+}
 </style>
 </head>
 <body>
     <canvas id="mainmap" width="1200" height="800"></canvas>
+    <select id="select"></select>
 </body>
 <script type="text/javascript">
 (function(){
@@ -60,6 +67,7 @@ span.sign {
         return res.json();
     })
     .then(function(json){
+        var select = document.querySelector("#select");
         json.values.forEach(function(ary, n){
             signs.push({
                 name: ary[0],
@@ -72,6 +80,10 @@ span.sign {
             ele.setAttribute("id", "sign-" + n);
             ele.textContent = ary[0];
             document.body.appendChild(ele);
+            ele = document.createElement("option");
+            ele.textContent = ary[0];
+            ele.value = n;
+            select.appendChild(ele);
         });
         draw();
     });
@@ -241,6 +253,17 @@ span.sign {
     document.addEventListener(eventEnd, signCallback);
     document.addEventListener("wheel", signCallback);
     document.addEventListener("dblclick", signCallback);
+
+    document.querySelector("#select").addEventListener("change", (event) => {
+        var sign = signs[event.target.value];
+        var cx = sign.x;
+        var cy = sign.y;
+        var by = Math.pow(1.1, zoom);
+        offsetX = -cx * by + (canvasWidth / 2);
+        offsetY = -cy * by + (canvasHeight / 2);
+        context.clearRect(0, 0, canvasWidth, canvasHeight);
+        draw();
+    });
 
     draw();
 })();
