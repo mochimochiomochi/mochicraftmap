@@ -94,6 +94,10 @@ span.sign {
         return img;
     };
     var drawImage = function(filename, context, x, y, w, h){
+        if (getNegativeCache(filename)) {
+            context.clearRect(x, y, w, h);
+            return;
+        }
         var img = new Image();
         img.src = filename;
         img.onload = function(){
@@ -101,6 +105,7 @@ span.sign {
             context.drawImage(img, x, y, w, h);
         };
         img.onerror = function(){
+            setNegativeCache(filename);
             context.clearRect(x, y, w, h);
         };
     };
@@ -264,6 +269,14 @@ span.sign {
         context.clearRect(0, 0, canvasWidth, canvasHeight);
         draw();
     });
+
+    var setNegativeCache = function(filename) {
+        sessionStorage.setItem("mochicraftmap.negativeCache." + filename, 1);
+    };
+
+    var getNegativeCache = function(filename) {
+        return sessionStorage.getItem("mochicraftmap.negativeCache." + filename);
+    }
 
     draw();
 })();
